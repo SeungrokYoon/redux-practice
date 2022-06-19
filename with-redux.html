@@ -18,8 +18,8 @@
     }
   </style>
   <div id="red"></div>
-  <div id="green"></div>
   <div id="blue"></div>
+  <div id="green"></div>
   <script>
     function reducer(state, action){
       //dispatch 에서 들어온 action 값과 기존의 state값을 참조해서 새로운 state값을 만들어 주는 것이다.
@@ -29,7 +29,7 @@
       }
       if(action.type==='CHANGE_COLOR'){
         // style.color = 'red' 이렇게 하면 undo redo 이런걸 못한다. 예측가능하지 못함. 불변함이 깨져서 그럼.
-        const newState= Object.assign({}, state, {color: 'red'}) // 물론 깊은 복사는 못함
+        const newState= Object.assign({}, state, {color: action.color}) // 물론 깊은 복사는 못함
         return newState
       }
       return state
@@ -47,7 +47,33 @@
       `
     }
     store.subscribe(red)
-    red()
+    red()//최초 렌더
+    function blue(){
+      const state = store.getState()
+      document.querySelector('#blue').innerHTML= `
+        <div class="container" id="component_blue" style="background-color:${state.color}">
+          <h1>Blue</h1>
+          <input type="button" value="fire" onclick="
+            store.dispatch({type:'CHANGE_COLOR', color:'blue'})
+          ">  
+        </div>
+      `
+    }
+    store.subscribe(blue)
+    blue()//최초 렌더
+    function green(){
+      const state = store.getState()
+      document.querySelector('#green').innerHTML= `
+        <div class="container" id="component_green" style="background-color:${state.color}">
+          <h1>Green</h1>
+          <input type="button" value="fire" onclick="
+            store.dispatch({type:'CHANGE_COLOR', color:'green'})
+          ">  
+        </div>
+      `
+    }
+    store.subscribe(green)
+    green()//최초 렌더
   </script>
 </body>
 </html>
